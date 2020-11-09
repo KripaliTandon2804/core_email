@@ -1,5 +1,7 @@
 'use strict'
 
+const Helpers = use('Helpers');
+
 /*
 |--------------------------------------------------------------------------
 | Providers
@@ -19,7 +21,10 @@ const providers = [
   '@adonisjs/shield/providers/ShieldProvider',
   '@adonisjs/session/providers/SessionProvider',
   '@adonisjs/auth/providers/AuthProvider',
-  'lucid-mongo/providers/LucidMongoProvider'
+  '@adonisjs/mail/providers/MailProvider',
+  'lucid-mongo/providers/LucidMongoProvider',
+  '@adonisjs/framework/providers/ViewProvider',
+  Helpers.appRoot('app/Providers/Core-Email/providers/CoreMailProvider')
 ]
 
 /*
