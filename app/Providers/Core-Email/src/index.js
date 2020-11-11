@@ -1,14 +1,20 @@
 
 const Mail = use('Mail')
-const CoreMailProvider
+const CoreMailProvider = require('../providers/CoreMailProvider')
 class CoreMail {
     constructor (Config){
         this.Config = Config
+        this.sendMail = {}
     }
 
+    get(){
+        const config = this.Config.get(`mail${smtp}`)
+        console.log(">>>>>>>>>>>>>",config)
+    }
+    
     sendMail(from, to, subject, cc, bcc){
         try{
-           Mail.send(data, (message) => {
+           Mail.raw('Plain text message', (message) => {
                message
                .from(from)
                .to(to)

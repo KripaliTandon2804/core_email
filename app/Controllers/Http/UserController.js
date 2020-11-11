@@ -1,7 +1,7 @@
 'use strict'
 const User = use('App/Models/User')
-const CoreMail = use('CoreMail')
-
+const CoreMail = use('CoreMail')  //require('../../Providers/Core-Email/src/index')
+console.log(">>>>>>>>>>>>>>>>>>>", CoreMail)
 class UserController {
     
 async store({request}) {
@@ -15,11 +15,9 @@ async store({request}) {
     const data = request.only(['email', 'username', 'password'])
 
     await CoreMail.sendMail('plain text email', (message) => {
-      console.log(">>>>>>>>>>>>.",message)
       message
         .to('kripalitandon@gmail.com')
         .from('kripalitandon@gmail.com')
-        .cc('email')
         .subject('Welcome to yardstick')
     })
 
