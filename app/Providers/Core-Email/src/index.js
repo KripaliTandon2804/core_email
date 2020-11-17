@@ -1,36 +1,28 @@
 
 const Mail = use('Mail')
+const message = require('./Message')
 const CoreMailProvider = require('../providers/CoreMailProvider')
 class CoreMail {
     constructor (Config){
         this.Config = Config
-        this.sendMail = {}
+        this.sendMail = this.sendMail
+        this.attachSubject = this.attachSubject
+        this.attachBCC = this.attachBCC
+        this.attachTemplate = this.attachTemplate
+        this.attachCC = this.attachCC
     }
 
-    get(){
-        const config = this.Config.get(`mail${smtp}`)
-        console.log(">>>>>>>>>>>>>",config)
-    }
-    
     sendMail(from, to, subject, cc, bcc){
-        try{
-           Mail.raw('Plain text message', (message) => {
-               message
-               .from(from)
-               .to(to)
-               .subject(subject)
-               .cc(cc)
-               .bcc(bcc)               
-           }) 
-
-        }catch(err){
-            console.log(err)
-        }
+        Mail.raw('Plain text message', (message) => {
+            message
+            .from(from)
+            .to(to)
+            .subject(subject)               
+        })    
     }
 
     attachSubject(subject){
         try{
-            this.subject = subject
             if(subject){
                 Mail.send(data, (message) => {
                     message.subject(subject)
@@ -44,7 +36,6 @@ class CoreMail {
 
     attachCC(cc){
         try{
-            this.cc = cc
             if(cc){
                 Mail.send(data, (message) => {
                     message.cc(cc)
@@ -58,7 +49,6 @@ class CoreMail {
 
     attachBCC(bcc){
         try{
-            this.bcc = bcc
             if(bcc){
                 Mail.send(data, (message) => {
                     message.bcc(bcc)
@@ -72,7 +62,6 @@ class CoreMail {
 
     attachTemplate(template){
         try{
-            this.data = data
             if(data){
                 Mail.send(data,(message) => {
                     message.attach('path', {contentType: 'plain/text'})
@@ -86,7 +75,6 @@ class CoreMail {
 
     attachAttachment(data){
         try{
-            this.data = data
             if(data){
                 Mail.send(data, (message) => {
                     message.attachData(Buffer.from('data'), data.txt)
