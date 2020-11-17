@@ -29,8 +29,8 @@ module.exports = {
     host: "smtp.gmail.com",
     secure: true,
     auth: {
-      user: "kripalitandon@gmail.com",
-      pass: "krun@0603"
+      user: Env.get('MAIL_USERNAME'),
+      pass: Env.get('MAIL_PASSWORD')
     },
     maxConnections: 5,
     maxMessages: 100,
