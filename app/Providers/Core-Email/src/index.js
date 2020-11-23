@@ -1,88 +1,90 @@
-
 const Mail = use('Mail')
-const message = require('./Message')
-const CoreMailProvider = require('../providers/CoreMailProvider')
+
+/**
+     * @method sendMail
+     * @async
+     * @param {*String} bodyOrTemplateName 
+     * @param {*String} subject 
+     * @param {*Array} to 
+     * @param {*String} from 
+     * @param {*String} type 
+     * @param {*Object} data 
+     * @param {*Array} cc 
+     * @param {*Array} bcc 
+     * @param {*String} attachment 
+     */
+
 class CoreMail {
     constructor (Config){
         this.Config = Config
-        this.sendMail = this.sendMail
-        this.attachSubject = this.attachSubject
-        this.attachBCC = this.attachBCC
-        this.attachTemplate = this.attachTemplate
-        this.attachCC = this.attachCC
     }
+     
+    async sendMail(bodyOrTemplateName, subject, to, from = '', type = '', data = {}, cc = [], bcc = [], attachment = '') {
+        this.to = to;
+        this.from = this.attachFrom(from);
+        this.attachment = attachment;
+        this.cc = cc;
+        this.bcc = bcc;
+        this.bodyOrTemplateName = bodyOrTemplateName;
+        this.subject = subject;
+        this.data = data;
 
-    sendMail(from, to, subject, cc, bcc){
-        Mail.raw('Plain text message', (message) => {
-            message
-            .from(from)
-            .to(to)
-            .subject(subject)               
-        })    
-    }
-
-    attachSubject(subject){
-        try{
-            if(subject){
-                Mail.send(data, (message) => {
-                    message.subject(subject)
-                })             
+        try {
+            const that = this;
+            //Remaining error handling
+            if(to === '' || to === null){
+                //console.log("Email Recepient Not Defined")
+            }           
+            if (type === 'raw') {
+                await Mail.raw(this.bodyOrTemplateName, (message) => {
+                    message.from(this.from);
+                    message.to(to);
+                    message.subject(this.subject);
+                    that.attachCC(this.cc, message);
+                    that.attachBCC(this.bcc, message);
+                    that.attachAttachment(this.attachment, message);
+                });
+            } else if (type === 'template') {
+                await Mail.send(this.bodyOrTemplateName, this.data, (message) => {                  
+                    message.from(this.from);
+                    message.to(to);
+                    message.subject(this.subject);
+                    that.attachCC(this.cc, message);
+                    that.attachBCC(this.bcc, message);
+                    that.attachAttachment(this.attachment, message);
+                });
             }
-            return 'Sending mail without subject'
-        }catch(err){
-            console.log(err)
+            
+        } catch (err) {
+            throw err;
+        }
+        
+    }
+
+    attachFrom(from) {
+        return from || this.Config.get('mail.from');
+        
+    }
+
+    attachCC(cc , message){
+        if (cc.length > 0) {
+            for(let x in cc) {
+                message.cc(cc[x]);
+            }
         }
     }
 
-    attachCC(cc){
-        try{
-            if(cc){
-                Mail.send(data, (message) => {
-                    message.cc(cc)
-                })
+    attachBCC(bcc, message) {
+        if (bcc.length > 0) {
+            for(let x in bcc) {
+                message.bcc(bcc[x]);
             }
-            return 'Sending mail without cc'
-        }catch(err){
-            console.log(err)
         }
     }
 
-    attachBCC(bcc){
-        try{
-            if(bcc){
-                Mail.send(data, (message) => {
-                    message.bcc(bcc)
-                })
-            }
-            return 'Sending mail without bcc'
-        }catch(err){
-            console.log(err)
-        }
-    }
-
-    attachTemplate(template){
-        try{
-            if(data){
-                Mail.send(data,(message) => {
-                    message.attach('path', {contentType: 'plain/text'})
-                })
-            }
-            return 'Sending mail without template'
-        }catch(err){
-            console.log(err)
-        }
-    }
-
-    attachAttachment(data){
-        try{
-            if(data){
-                Mail.send(data, (message) => {
-                    message.attachData(Buffer.from('data'), data.txt)
-                })
-            }
-            return 'Sending mail without data'
-        }catch(err){
-            console.log(err)
+    attachAttachment(attachment, message) {
+        if (attachment !== '') {
+            message.attach(attachment);
         }
     }
 }

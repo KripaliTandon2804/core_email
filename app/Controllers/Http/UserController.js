@@ -1,21 +1,13 @@
 'use strict'
-const User = use('App/Models/User')
 const CoreMail = use('CoreMail')
+const Helpers = use('Helpers')
 class UserController {
     
 async store() {
-    
-    // const users = new User();
-    // users.username = 'Kripali';
-    // users.email = 'kripalitandon@gmail.com';
-    // users.password = 'password12'
-
-    // const user = await User.create(users.toJSON())
-    // const data = request.only(['email', 'username', 'password'])
-
-    await CoreMail.sendMail('kripalitandon@gmail.com','kripalitandon@gmail.com', 'Welcome')
-
-    return 'Registered successfully'
+  await CoreMail.sendMail('welcome', 'Test Mail', 'kripalitandon@gmail.com', 'template','', ['kripali.magnates@gmail.com'], ['kripali.tandon@magnates.mobi','kripalitandon2804@gmail.com'],'ex.txt');
+            //async sendMail(bodyOrTemplateName, subject, to, from = '', type = 'raw', data = {}, cc = [], bcc = [], attachment = '')
+  return 'hello';
+  
   }  
 }
 
